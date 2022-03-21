@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,9 +6,37 @@ using UnityEngine;
 public class CameraMove : MonoBehaviour
 {
     public Transform target;
-    public Vector3 offset;
+    public float targetY;
+
+    public float xRotMax;
+    public float rotSpeed;
+    public float scrollSpeed;
+
+    public float distance;
+    public float minDistance;
+    public float maxDistance;
+
+    private float xRot;
+    private float yRot;
+    private Vector3 targetPos;
+    private Vector3 dir;
     void Update()
     {
-        transform.position = target.position + offset;
+        if (Input.GetMouseButton(1))
+        {
+            xRot += Input.GetAxis("Mouse Y") * rotSpeed * Time.deltaTime;
+            yRot += Input.GetAxis("Mouse X") * rotSpeed * Time.deltaTime;
+
+            distance += -Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * Time.deltaTime;
+        }
+        targetPos = target.position + Vector3.up * targetY;
+
+        dir = Quaternion.Euler(-xRot, yRot, 0f) * Vector3.forward;
+        transform.position = targetPos + dir * -distance;
+    }
+
+    private void LateUpdate()
+    {
+        transform.LookAt(targetPos);
     }
 }
