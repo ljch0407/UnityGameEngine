@@ -50,7 +50,7 @@ public class Player : MonoBehaviour
     {
         moveVec = new Vector3(hAxis, 0, vAxis);
         
-        transform.Translate(moveVec*speed*Time.deltaTime,Space.Self);
+        transform.Translate(moveVec*speed*(walkbtnDown ? 0.3f : 1.0f) *Time.deltaTime,Space.Self);
         anim.SetBool("isRun",moveVec != Vector3.zero);
         anim.SetBool("isWalk",walkbtnDown);
     }
