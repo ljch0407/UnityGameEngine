@@ -23,6 +23,12 @@ public class Player : MonoBehaviour
     public int jumpPower;
     public Camera cam;
 
+    public int coins;
+    public int health;
+
+    public int maxCoins;
+    public int maxHealth;
+
     void Awake()
     {
         anim = GetComponentInChildren<Animator>();
@@ -80,6 +86,23 @@ public class Player : MonoBehaviour
         {
             anim.SetBool("isJump",false);
             isJump = false;
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Item")
+        {
+            Item item = other.GetComponent<Item>();
+            switch (item.type)
+            {
+                case Item.Type.Coin:
+                    coins += item.value;
+                    if (coins > maxCoins)
+                        coins = maxCoins;
+                    break;
+            }
+            Destroy(other.gameObject);
         }
     }
 }
