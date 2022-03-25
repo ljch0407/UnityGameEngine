@@ -22,15 +22,14 @@ public class CameraMove : MonoBehaviour
     private Vector3 dir;
     void Update()
     {
-        if (Input.GetMouseButton(1))
-        {
+       
             xRot += Input.GetAxis("Mouse Y") * rotSpeed * Time.deltaTime;
             yRot += Input.GetAxis("Mouse X") * rotSpeed * Time.deltaTime;
 
             distance += -Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * Time.deltaTime;
-        }
+        
         targetPos = target.position + Vector3.up * targetY;
-
+        
         dir = Quaternion.Euler(-xRot, yRot, 0f) * Vector3.forward;
         transform.position = targetPos + dir * -distance;
     }
