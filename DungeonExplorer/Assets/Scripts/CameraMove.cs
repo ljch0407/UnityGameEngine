@@ -23,7 +23,7 @@ public class CameraMove : MonoBehaviour
     void Update()
     {
        
-            xRot += Input.GetAxis("Mouse Y") * rotSpeed * Time.deltaTime;
+           // xRot += Input.GetAxis("Mouse Y") * rotSpeed * Time.deltaTime;
             yRot += Input.GetAxis("Mouse X") * rotSpeed * Time.deltaTime;
 
             distance += -Input.GetAxis("Mouse ScrollWheel") * scrollSpeed * Time.deltaTime;
