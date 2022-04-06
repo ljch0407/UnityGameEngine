@@ -8,44 +8,54 @@ using UnityEngine.PlayerLoop;
 
 public class Player : MonoBehaviour
 {
+    //플레이어 public 변수
     public int speed;
+    public int jumpPower;
     
+    public int coins;
+    public int health;
+
+    public int maxCoins;
+    public int maxHealth;
+    
+    //플레이어 움직임 변수
     private float hAxis;
     private float vAxis;
     private Vector3 moveVec;
     private Vector3 moveDir;
     private bool walkbtnDown;
 
+    //플레이어 행동 제어 bools
     private bool isJump;
     private bool jDown;
     private bool iDown;
     private bool sDown1;
+    private bool fDown;
+    private bool isSwap;
+    private bool isFireReady;
 
-
+    //플레이어 객체 compomemt
     private Animator anim;
     private Rigidbody rigid;
-
-
-    public int jumpPower;
+    
+    //카메라 
     public Camera cam;
-
-    public int coins;
-    public int health;
-
-    public int maxCoins;
-    public int maxHealth;
-
+    
+    //주변 오브젝트 검사용 
     private GameObject nearObject;
-   
+    
+    //무기 배열
     public GameObject[] weapons;
     public bool[] hasWeapons;
+   
+    //무기관련 변수
     private int equipWeaponIndex = -1;
-    private GameObject equipWeapon;
-    
-    private bool isSwap;
+    private weapon equipWeapon;
+    private float fireDelay;
     
     void Awake()
     {
+        
         anim = GetComponentInChildren<Animator>();
         rigid = GetComponent<Rigidbody>();
     }
@@ -58,6 +68,7 @@ public class Player : MonoBehaviour
         Jump();
         Interaction();
         Swap();
+        Attack();
     }
 
 
@@ -67,11 +78,28 @@ public class Player : MonoBehaviour
         vAxis = Input.GetAxisRaw("Vertical");
         walkbtnDown = Input.GetButton("Walk");
         jDown = Input.GetButtonDown("Jump");
+        fDown = Input.GetButtonDown("Fire1");
         iDown = Input.GetButtonDown("Interaction");
         sDown1 = Input.GetButtonDown("Swap1");
        
     }
 
+
+    void Attack()
+    {
+        if (equipWeapon == null)
+            return;
+
+        fireDelay += Time.deltaTime;
+        isFireReady = equipWeapon.attackRate < fireDelay;
+
+        if (fDown && isFireReady && !isSwap)
+        {
+            equipWeapon.useWeapon();
+            anim.SetTrigger("doSwing");
+            fireDelay = 0;
+        }
+    }
     void Swap()
     {
         if (sDown1 && (!hasWeapons[0] || equipWeaponIndex == 0))
@@ -86,11 +114,11 @@ public class Player : MonoBehaviour
         if (sDown1 && !isJump)
         {
             if(equipWeapon != null)
-                equipWeapon.SetActive(false);
+                equipWeapon.gameObject.SetActive(false);
 
             equipWeaponIndex = weaponIndex;
-            equipWeapon = weapons[weaponIndex];
-            equipWeapon.SetActive(true);
+            equipWeapon = weapons[weaponIndex].GetComponent<weapon>();
+            equipWeapon.gameObject.SetActive(true);
             
             
             anim.SetTrigger("doSwap");
@@ -144,8 +172,8 @@ public class Player : MonoBehaviour
         if (jDown && !isJump && !isSwap)
         {
             rigid.AddForce(Vector3.up * jumpPower,ForceMode.Impulse);
-            anim.SetBool("isJump",true);
             anim.SetTrigger("doJump");
+            anim.SetBool("isJump", true);
             isJump = true;
         }
     }
@@ -180,8 +208,6 @@ public class Player : MonoBehaviour
     {
         if (other.tag == "Weapon")
             nearObject = other.gameObject;
-        
-        Debug.Log(nearObject.name);
     }
 
     private void OnTriggerExit(Collider other)
