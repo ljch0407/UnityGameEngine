@@ -9,7 +9,8 @@ public class Item : MonoBehaviour
     {
         Coin,
         Heart,
-        Weapon
+        Weapon,
+        Ammo,
     };
 
     private float rotateSpeed = 40.0f;
