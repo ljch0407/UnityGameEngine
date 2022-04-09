@@ -41,7 +41,8 @@ public class Player : MonoBehaviour
     private bool isSwap;
     private bool isReload;
     private bool isFireReady;
-
+    private bool isBorder;
+    
     //플레이어 객체 compomemt
     private Animator anim;
     private Rigidbody rigid;
@@ -204,7 +205,9 @@ public class Player : MonoBehaviour
         if (isSwap || isReload)
             moveVec = Vector3.zero;
         
-        transform.Translate(moveVec*speed*(walkbtnDown ? 0.3f : 1.0f) *Time.deltaTime,Space.Self);
+        if(!isBorder)
+            transform.Translate(moveVec*speed*(walkbtnDown ? 0.3f : 1.0f) *Time.deltaTime,Space.Self);
+       
         anim.SetBool("isRun",moveVec != Vector3.zero);
         anim.SetBool("isWalk",walkbtnDown);
     }
@@ -249,6 +252,11 @@ public class Player : MonoBehaviour
                     if (coins > maxCoins)
                         coins = maxCoins;
                     break;
+                case Item.Type.Ammo:
+                    ammo += item.value;
+                    if (ammo > maxAmmo)
+                        ammo = maxAmmo;
+                    break;
             }
             Destroy(other.gameObject);
         }
@@ -265,5 +273,23 @@ public class Player : MonoBehaviour
         if (other.tag == "Weapon")
             nearObject = null;
         
+    }
+
+    void FreezeRotation()
+    {
+        rigid.angularVelocity = Vector3.zero;
+    }
+
+    void StopToWall()
+    {
+        Debug.DrawRay(transform.position, transform.forward * 5, Color.green);
+        isBorder = Physics.Raycast(transform.position, transform.forward, 5, LayerMask.GetMask("Wall"));
+        
+    }
+
+    private void FixedUpdate()
+    {
+        FreezeRotation();
+        StopToWall();
     }
 }
