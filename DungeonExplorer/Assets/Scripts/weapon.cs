@@ -25,6 +25,9 @@ public class weapon : MonoBehaviour
     public Transform bulletCasePos;
     public GameObject bulletCase;
 
+    public int maxAmmo;
+    public int curAmmo;
+    
     public void useWeapon()
     {
         if (type == Type.Melee)
@@ -32,8 +35,9 @@ public class weapon : MonoBehaviour
             StopCoroutine("swing");
             StartCoroutine("swing");
         }
-        else if (type == Type.Range)
+        else if (type == Type.Range && curAmmo > 0)
         {
+            curAmmo--;
             StartCoroutine("shot");
         }
     }

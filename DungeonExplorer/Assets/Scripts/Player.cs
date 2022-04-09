@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using UnityEngine.Rendering;
 
 public class Player : MonoBehaviour
 {
@@ -17,6 +18,9 @@ public class Player : MonoBehaviour
 
     public int maxCoins;
     public int maxHealth;
+
+    public int ammo;
+    public int maxAmmo;
     
     //플레이어 움직임 변수
     private float hAxis;
@@ -33,7 +37,9 @@ public class Player : MonoBehaviour
     private bool sDown2;
     private bool sDown3;
     private bool fDown;
+    private bool rDown;
     private bool isSwap;
+    private bool isReload;
     private bool isFireReady;
 
     //플레이어 객체 compomemt
@@ -57,7 +63,6 @@ public class Player : MonoBehaviour
     
     void Awake()
     {
-        
         anim = GetComponentInChildren<Animator>();
         rigid = GetComponent<Rigidbody>();
     }
@@ -71,6 +76,7 @@ public class Player : MonoBehaviour
         Interaction();
         Swap();
         Attack();
+        Reload();
     }
 
 
@@ -85,7 +91,8 @@ public class Player : MonoBehaviour
         sDown1 = Input.GetButtonDown("Swap1");
         sDown2 = Input.GetButtonDown("Swap2");
         sDown3 = Input.GetButtonDown("Swap3");
-       
+        rDown = Input.GetButtonDown("Reload");
+
     }
 
 
@@ -96,6 +103,9 @@ public class Player : MonoBehaviour
 
         fireDelay += Time.deltaTime;
         isFireReady = equipWeapon.attackRate < fireDelay;
+       
+        if (equipWeapon.type == weapon.Type.Range && equipWeapon.curAmmo == 0)
+            return;
 
         if (fDown && isFireReady && !isSwap)
         {
@@ -104,6 +114,35 @@ public class Player : MonoBehaviour
             fireDelay = 0;
         }
     }
+
+    void Reload()
+    {
+        if (equipWeapon == null)
+            return;
+        
+        if(equipWeapon.type == weapon.Type.Melee)
+            return;
+
+        if (ammo == 0)
+            return;
+
+        if (rDown && !isJump && !isSwap && isFireReady)
+        {
+            anim.SetTrigger("doReload");
+            isReload = true;
+
+            Invoke("ReloadOut", 0.5f);
+        }
+    }
+
+    void ReloadOut()
+    {
+        int reAmmo = ammo < equipWeapon.maxAmmo ? ammo : equipWeapon.maxAmmo;
+        equipWeapon.curAmmo = reAmmo;
+        ammo -= reAmmo;
+        isReload = false;
+    }
+
     void Swap()
     {
         if (sDown1 && (!hasWeapons[0] || equipWeaponIndex == 0))
@@ -162,7 +201,7 @@ public class Player : MonoBehaviour
     {
         moveVec = new Vector3(hAxis, 0, vAxis);
 
-        if (isSwap)
+        if (isSwap || isReload)
             moveVec = Vector3.zero;
         
         transform.Translate(moveVec*speed*(walkbtnDown ? 0.3f : 1.0f) *Time.deltaTime,Space.Self);
