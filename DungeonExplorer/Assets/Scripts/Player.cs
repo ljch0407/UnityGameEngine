@@ -30,6 +30,8 @@ public class Player : MonoBehaviour
     private bool jDown;
     private bool iDown;
     private bool sDown1;
+    private bool sDown2;
+    private bool sDown3;
     private bool fDown;
     private bool isSwap;
     private bool isFireReady;
@@ -78,9 +80,11 @@ public class Player : MonoBehaviour
         vAxis = Input.GetAxisRaw("Vertical");
         walkbtnDown = Input.GetButton("Walk");
         jDown = Input.GetButtonDown("Jump");
-        fDown = Input.GetButtonDown("Fire1");
+        fDown = Input.GetButton("Fire1");
         iDown = Input.GetButtonDown("Interaction");
         sDown1 = Input.GetButtonDown("Swap1");
+        sDown2 = Input.GetButtonDown("Swap2");
+        sDown3 = Input.GetButtonDown("Swap3");
        
     }
 
@@ -104,14 +108,21 @@ public class Player : MonoBehaviour
     {
         if (sDown1 && (!hasWeapons[0] || equipWeaponIndex == 0))
             return;
-            
+        if (sDown2 && (!hasWeapons[1] || equipWeaponIndex == 1))
+            return;
+        if (sDown3 && (!hasWeapons[2] || equipWeaponIndex == 2))
+            return;
         
         int weaponIndex = -1;
 
         if (sDown1)
             weaponIndex = 0;
+        if (sDown2)
+            weaponIndex = 1;
+        if (sDown3)
+            weaponIndex = 2;
         
-        if (sDown1 && !isJump)
+        if ((sDown1||sDown2||sDown3) && !isJump)
         {
             if(equipWeapon != null)
                 equipWeapon.gameObject.SetActive(false);
