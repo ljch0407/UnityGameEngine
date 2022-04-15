@@ -4,23 +4,43 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
+
 
 public class Enemy : MonoBehaviour
 {
    public int curHP;
    public int maxHP;
-
+   public bool isChase;
+   
    private Rigidbody rigid;
    private BoxCollider boxCollider;
    private Material material;
-   
 
+   private NavMeshAgent nav;
+   private Animator anim;
    private void Awake()
    {
       rigid = GetComponent<Rigidbody>();
       boxCollider = GetComponent<BoxCollider>();
-      material = GetComponent<MeshRenderer>().material;
+      material = GetComponentInChildren<MeshRenderer>().material;
+      nav = GetComponent<NavMeshAgent>();
+      anim = GetComponentInChildren<Animator>();
+   }
 
+   void ChasseStart()
+   {
+      isChase = true;
+      anim.SetBool("isWalk",true);
+   }
+
+   private void Update()
+   {
+      if (isChase)
+      {
+         //네비메쉬로 추적하는 코드 필요, Collider하나 크게 넣어서 트리거 설정하고
+         //플레이어가 들어오면 추적하도록 설정하면될듯함.
+      }
    }
 
    private void OnTriggerEnter(Collider other)
@@ -60,7 +80,10 @@ public class Enemy : MonoBehaviour
       {
          material.color = Color.gray;
          gameObject.layer = 13;
-         
+         isChase = false;
+         nav.enabled = false;
+         anim.SetTrigger("doDie");
+
          reactVec = reactVec.normalized;
          reactVec += Vector3.up;
          rigid.AddForce(reactVec * 5,ForceMode.Impulse);
