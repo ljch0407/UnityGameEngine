@@ -262,6 +262,11 @@ public class Player : MonoBehaviour
                     if (ammo > maxAmmo)
                         ammo = maxAmmo;
                     break;
+                case Item.Type.Heart:
+                    health += item.value;
+                    if (health > maxHealth)
+                        health = maxHealth;
+                    break;
             }
             Destroy(other.gameObject);
         }
