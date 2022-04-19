@@ -4,27 +4,23 @@ using UnityEngine;
 
 public class ParticleTrap : MonoBehaviour
 {
+    public int pushingForce;
+    public int floatingForce;
+
     private ParticleSystem particles;
     private List<ParticleCollisionEvent> collisionEvents;
 
     // Start is called before the first frame update
     void Start()
     {
-        particles = GetComponentInChildren<ParticleSystem>();
+        particles = GetComponent<ParticleSystem>();
 
         collisionEvents = new List<ParticleCollisionEvent>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-
     void OnParticleCollision(GameObject other)
     {
-        Debug.Log("Ãæµ¹");
+        Debug.Log(name);
         int numCollisionEvents = particles.GetCollisionEvents(other, collisionEvents);
 
         Rigidbody rb = other.GetComponent<Rigidbody>();
@@ -33,9 +29,9 @@ public class ParticleTrap : MonoBehaviour
         {
             if (rb)
             {
-                Vector3 force = collisionEvents[i].normal * 100 * Time.deltaTime;
-                rb.AddForce(force, ForceMode.Acceleration);
-                break;
+                Vector3 force = -collisionEvents[i].normal * pushingForce;
+                force.y *= floatingForce;
+                rb.AddForce(force);
             }
             i++;
         }

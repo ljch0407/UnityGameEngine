@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8947881941797163517}
   - component: {fileID: 1345708410353797395}
   - component: {fileID: 4551716459962248861}
-  - component: {fileID: 8947881941797163516}
   m_Layer: 14
   m_Name: Effect_07_SmashParticle
   m_TagString: Trap
@@ -4892,18 +4891,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &8947881941797163516
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 641250089859300677}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52d4117932729514388636bc88db4ba1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2033825333645437221
 GameObject:
   m_ObjectHideFlags: 0
@@ -4915,7 +4902,6 @@ GameObject:
   - component: {fileID: 1738044384142274765}
   - component: {fileID: 857610715555852227}
   - component: {fileID: 8460896970165736434}
-  - component: {fileID: 8460896970165736437}
   m_Layer: 14
   m_Name: Effect_07_SmashParticle_2
   m_TagString: Trap
@@ -9796,18 +9782,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &8460896970165736437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2033825333645437221}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52d4117932729514388636bc88db4ba1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2434575517889348220
 GameObject:
   m_ObjectHideFlags: 0
@@ -14738,6 +14712,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52d4117932729514388636bc88db4ba1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pushingForce: 0
+  floatingForce: 0
 --- !u!1 &6827114880006979025
 GameObject:
   m_ObjectHideFlags: 0
@@ -14749,7 +14725,6 @@ GameObject:
   - component: {fileID: 321573243945406793}
   - component: {fileID: 368852548941279562}
   - component: {fileID: 2783330707173886769}
-  - component: {fileID: 6827114880006979024}
   m_Layer: 14
   m_Name: Effect_07_Shockwave
   m_TagString: Trap
@@ -19621,15 +19596,3 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &6827114880006979024
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6827114880006979025}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52d4117932729514388636bc88db4ba1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
