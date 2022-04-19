@@ -21,7 +21,9 @@ public class Player : MonoBehaviour
 
     public int ammo;
     public int maxAmmo;
-    
+
+    public int trapForce;
+
     //플레이어 움직임 변수
     private float hAxis;
     private float vAxis;
@@ -42,6 +44,9 @@ public class Player : MonoBehaviour
     private bool isReload;
     private bool isFireReady;
     private bool isBorder;
+
+    // 함정에 맞았을 때
+    private bool isTrapped;
     
     //플레이어 객체 compomemt
     private Animator anim;
@@ -61,7 +66,7 @@ public class Player : MonoBehaviour
     private int equipWeaponIndex = -1;
     private weapon equipWeapon;
     private float fireDelay;
-    
+
     void Awake()
     {
         anim = GetComponentInChildren<Animator>();
@@ -266,13 +271,35 @@ public class Player : MonoBehaviour
     {
         if (other.tag == "Weapon")
             nearObject = other.gameObject;
+
+        if (other.tag == "Trap" && !isTrapped)
+        {
+            var particle = other.gameObject.GetComponentInChildren<ParticleSystem>();
+
+            if (particle.particleCount > 0)
+            {
+                health -= 1;
+                Vector3 dir = new Vector3(0, 0, 1);
+                dir = -(other.transform.rotation * dir).normalized;
+
+                var force = trapForce * dir;
+                force.y = jumpPower;
+
+                rigid.AddForce(force, ForceMode.Impulse);
+                isTrapped = true;
+            }
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == "Weapon")
             nearObject = null;
-        
+
+        if (other.tag == "Trap" && isTrapped)
+        {
+            isTrapped = false;
+        }
     }
 
     void FreezeRotation()
