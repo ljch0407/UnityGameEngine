@@ -238,6 +238,7 @@ public class Player : MonoBehaviour
                 anim.SetTrigger("doJump");
                 anim.SetBool("isJump", true);
                 isJump = true;
+                if (wing > 0) wing -= 1;
             }
         }
     }
@@ -248,7 +249,6 @@ public class Player : MonoBehaviour
         {
             anim.SetBool("isJump",false);
             isJump = false;
-            if (wing > 0) wing -= 1;
         }
     }
 
