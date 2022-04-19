@@ -19,11 +19,14 @@ public class Player : MonoBehaviour
     public int maxCoins;
     public int maxHealth;
 
+    public int wing;
+    public int maxWing;
+    
     public int ammo;
     public int maxAmmo;
 
     public int trapForce;
-
+    
     //플레이어 움직임 변수
     private float hAxis;
     private float vAxis;
@@ -227,12 +230,15 @@ public class Player : MonoBehaviour
 
     void Jump()
     {
-        if (jDown && !isJump && !isSwap)
+        if (jDown && !isSwap)
         {
-            rigid.AddForce(Vector3.up * jumpPower,ForceMode.Impulse);
-            anim.SetTrigger("doJump");
-            anim.SetBool("isJump", true);
-            isJump = true;
+            if (wing > 0 || !isJump)
+            {
+                rigid.AddForce(Vector3.up * jumpPower,ForceMode.Impulse);
+                anim.SetTrigger("doJump");
+                anim.SetBool("isJump", true);
+                isJump = true;
+            }
         }
     }
 
@@ -242,6 +248,7 @@ public class Player : MonoBehaviour
         {
             anim.SetBool("isJump",false);
             isJump = false;
+            if (wing > 0) wing -= 1;
         }
     }
 
@@ -266,6 +273,11 @@ public class Player : MonoBehaviour
                     health += item.value;
                     if (health > maxHealth)
                         health = maxHealth;
+                    break;
+                case Item.Type.Wing:
+                    wing += item.value;
+                    if (wing > maxWing)
+                        wing = maxWing;
                     break;
             }
             Destroy(other.gameObject);

@@ -11,6 +11,7 @@ public class Item : MonoBehaviour
         Heart,
         Weapon,
         Ammo,
+        Wing,
     };
 
     private float rotateSpeed = 40.0f;
