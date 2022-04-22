@@ -19,8 +19,13 @@ public class Player : MonoBehaviour
     public int maxCoins;
     public int maxHealth;
 
+    public int wing;
+    public int maxWing;
+    
     public int ammo;
     public int maxAmmo;
+
+    public int trapForce;
     
     //플레이어 움직임 변수
     private float hAxis;
@@ -42,6 +47,9 @@ public class Player : MonoBehaviour
     private bool isReload;
     private bool isFireReady;
     private bool isBorder;
+
+    // 함정에 맞았을 때
+    private bool isTrapped;
     
     //플레이어 객체 compomemt
     private Animator anim;
@@ -61,7 +69,7 @@ public class Player : MonoBehaviour
     private int equipWeaponIndex = -1;
     private weapon equipWeapon;
     private float fireDelay;
-    
+
     void Awake()
     {
         anim = GetComponentInChildren<Animator>();
@@ -222,12 +230,16 @@ public class Player : MonoBehaviour
 
     void Jump()
     {
-        if (jDown && !isJump && !isSwap)
+        if (jDown && !isSwap)
         {
-            rigid.AddForce(Vector3.up * jumpPower,ForceMode.Impulse);
-            anim.SetTrigger("doJump");
-            anim.SetBool("isJump", true);
-            isJump = true;
+            if (wing > 0 || !isJump)
+            {
+                rigid.AddForce(Vector3.up * jumpPower,ForceMode.Impulse);
+                anim.SetTrigger("doJump");
+                anim.SetBool("isJump", true);
+                isJump = true;
+                if (wing > 0) wing -= 1;
+            }
         }
     }
 
@@ -257,6 +269,16 @@ public class Player : MonoBehaviour
                     if (ammo > maxAmmo)
                         ammo = maxAmmo;
                     break;
+                case Item.Type.Heart:
+                    health += item.value;
+                    if (health > maxHealth)
+                        health = maxHealth;
+                    break;
+                case Item.Type.Wing:
+                    wing += item.value;
+                    if (wing > maxWing)
+                        wing = maxWing;
+                    break;
             }
             Destroy(other.gameObject);
         }
@@ -266,13 +288,35 @@ public class Player : MonoBehaviour
     {
         if (other.tag == "Weapon")
             nearObject = other.gameObject;
+
+        if (other.tag == "Trap" && !isTrapped)
+        {
+            var particle = other.gameObject.GetComponentInChildren<ParticleSystem>();
+
+            if (particle.particleCount > 0)
+            {
+                health -= 1;
+                Vector3 dir = new Vector3(0, 0, 1);
+                dir = -(other.transform.rotation * dir).normalized;
+
+                var force = trapForce * dir;
+                force.y = jumpPower;
+
+                rigid.AddForce(force, ForceMode.Impulse);
+                isTrapped = true;
+            }
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == "Weapon")
             nearObject = null;
-        
+
+        if (other.tag == "Trap" && isTrapped)
+        {
+            isTrapped = false;
+        }
     }
 
     void FreezeRotation()
