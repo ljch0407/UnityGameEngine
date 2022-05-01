@@ -47,6 +47,7 @@ public class Player : MonoBehaviour
     private bool isReload;
     private bool isFireReady;
     private bool isBorder;
+    private bool isDamage;
 
     // 함정에 맞았을 때
     private bool isTrapped;
@@ -54,6 +55,7 @@ public class Player : MonoBehaviour
     //플레이어 객체 compomemt
     private Animator anim;
     private Rigidbody rigid;
+    private MeshRenderer[] meshs;
     
     //카메라 
     public Camera cam;
@@ -74,6 +76,7 @@ public class Player : MonoBehaviour
     {
         anim = GetComponentInChildren<Animator>();
         rigid = GetComponent<Rigidbody>();
+        meshs = GetComponentsInChildren<MeshRenderer>();
     }
 
     void Update()
@@ -281,6 +284,30 @@ public class Player : MonoBehaviour
                     break;
             }
             Destroy(other.gameObject);
+        }
+        else if (other.tag == "EnemyBullet")
+        {
+            if (!isDamage)
+            {
+                Bullet enemyBullet = other.GetComponent<Bullet>();
+                health -= enemyBullet.damage;
+                StartCoroutine(OnDamage());
+            }
+        }
+    }
+
+    IEnumerator OnDamage()
+    {
+        isDamage = true;
+        foreach (MeshRenderer mesh in meshs)
+        {
+            mesh.material.color = Color.yellow;
+        }
+        yield return new WaitForSeconds(1f);
+        isDamage = false;
+        foreach (MeshRenderer mesh in meshs)
+        {
+            mesh.material.color = Color.white;
         }
     }
 

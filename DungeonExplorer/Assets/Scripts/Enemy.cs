@@ -12,11 +12,13 @@ public class Enemy : MonoBehaviour
    public int curHP;
    public int maxHP;
    public bool isChase;
-   
+   public BoxCollider meleeArea;
+   public bool isAttack;
+
    private Rigidbody rigid;
    private BoxCollider boxCollider;
    private Material material;
-
+   
    private NavMeshAgent nav;
    private Animator anim;
    private void Awake()
@@ -41,6 +43,53 @@ public class Enemy : MonoBehaviour
          //네비메쉬로 추적하는 코드 필요, Collider하나 크게 넣어서 트리거 설정하고
          //플레이어가 들어오면 추적하도록 설정하면될듯함.
       }
+   }
+
+   void FreezeVelocity()
+   {
+      if (isChase)
+      {
+         rigid.velocity = Vector3.zero;
+         rigid.angularVelocity = Vector3.zero;
+      }
+   }
+
+   private void FixedUpdate()
+   {
+      FreezeVelocity();
+   }
+
+   void Targeting()
+   {
+      float targetRadius = 1.5f;
+      float targetRange = 3f;
+
+      RaycastHit[] rayHits = Physics.SphereCastAll(transform.position, targetRadius, transform.forward,
+         targetRange, LayerMask.GetMask("Player"));
+
+      if (rayHits.Length > 0 && !isAttack)
+      {
+         StartCoroutine(Attack());
+      }
+   }
+
+   IEnumerator Attack()
+   {
+      isChase = false;
+      isAttack = true;
+      
+      anim.SetBool("isAttack",true);
+      
+      yield return new WaitForSeconds(0.2f);
+      meleeArea.enabled = true;
+      yield return new WaitForSeconds(1f);
+      meleeArea.enabled = false;
+      
+      isChase = true;
+      isAttack = false;
+      
+      anim.SetBool("isAttack",false);
+      
    }
 
    private void OnTriggerEnter(Collider other)
