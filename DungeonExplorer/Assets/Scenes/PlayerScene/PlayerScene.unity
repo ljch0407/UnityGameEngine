@@ -3033,6 +3033,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ForceTrap
       objectReference: {fileID: 0}
+    - target: {fileID: 1291468608618566687, guid: 30a3c523f63698342b867073a8a5cb6f, type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1616789440832714847, guid: 30a3c523f63698342b867073a8a5cb6f, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -3076,6 +3080,14 @@ PrefabInstance:
     - target: {fileID: 1616789440832714847, guid: 30a3c523f63698342b867073a8a5cb6f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6310962081863725767, guid: 30a3c523f63698342b867073a8a5cb6f, type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6615681567345567654, guid: 30a3c523f63698342b867073a8a5cb6f, type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5160186641413089641, guid: 30a3c523f63698342b867073a8a5cb6f, type: 3}
