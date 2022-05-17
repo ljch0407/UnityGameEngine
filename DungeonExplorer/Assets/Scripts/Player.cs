@@ -69,7 +69,7 @@ public class Player : MonoBehaviour
    
     //무기관련 변수
     private int equipWeaponIndex = -1;
-    private weapon equipWeapon;
+    public weapon equipWeapon;
     private float fireDelay;
 
     void Awake()
