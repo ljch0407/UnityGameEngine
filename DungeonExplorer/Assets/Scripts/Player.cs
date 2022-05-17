@@ -235,13 +235,23 @@ public class Player : MonoBehaviour
     {
         if (jDown && !isSwap)
         {
-            if (wing > 0 || !isJump)
+            if (!isJump)
             {
                 rigid.AddForce(Vector3.up * jumpPower,ForceMode.Impulse);
                 anim.SetTrigger("doJump");
                 anim.SetBool("isJump", true);
                 isJump = true;
-                if (wing > 0) wing -= 1;
+            }
+            else
+            {
+                if (wing > 0)
+                {
+                    rigid.AddForce(Vector3.up * jumpPower,ForceMode.Impulse);
+                    anim.SetTrigger("doJump");
+                    anim.SetBool("isJump", true);
+                    isJump = true;
+                    wing -= 1;
+                }
             }
         }
     }
