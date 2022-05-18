@@ -304,6 +304,10 @@ public class Player : MonoBehaviour
                 StartCoroutine(OnDamage());
             }
         }
+        else if(other.tag == "InstantKill")
+        {
+            //체크포인트로 돌아가기
+        }
     }
 
     IEnumerator OnDamage()
