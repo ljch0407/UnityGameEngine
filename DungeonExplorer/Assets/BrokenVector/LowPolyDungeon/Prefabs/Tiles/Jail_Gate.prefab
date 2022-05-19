@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3949618021091567147}
   - component: {fileID: 3949618021090240011}
   - component: {fileID: 3949618021089273035}
-  - component: {fileID: 3949618021091473930}
+  - component: {fileID: 7593862018710384015}
   m_Layer: 0
   m_Name: Jail_Gate
   m_TagString: Untagged
@@ -84,7 +84,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3949618021091473930
+--- !u!64 &7593862018710384015
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -97,4 +97,4 @@ MeshCollider:
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 263765498397176580, guid: 3fe5630804cb08a48bcd1987a685adcf, type: 3}
+  m_Mesh: {fileID: 7592789056660096611, guid: 9d15bb47597152f4b93bdcb9d0f4ff2b, type: 3}
