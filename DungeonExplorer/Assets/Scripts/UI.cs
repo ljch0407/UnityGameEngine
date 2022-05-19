@@ -12,13 +12,16 @@ public class UI : MonoBehaviour
     public TMP_Text health;
     public TMP_Text ammo;
     public TMP_Text coin;
+    public TMP_Text wing;
 
     void LateUpdate()
     {
         health.text = player.health + "/" + player.maxHealth;
         coin.text = string.Format("{0:n0}", player.coins);
+        wing.text = player.wing + "/" + player.maxWing;
         if (player.equipWeapon == null) ammo.text = "-";
         else if (player.equipWeapon.type == weapon.Type.Melee) ammo.text = "-";
         else if (player.equipWeapon.type == weapon.Type.Range) ammo.text = player.equipWeapon.curAmmo + "/" + player.equipWeapon.maxAmmo;
+        
     }
 }
