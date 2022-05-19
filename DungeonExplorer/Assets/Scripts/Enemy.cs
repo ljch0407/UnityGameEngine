@@ -9,6 +9,14 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
+   public enum Type
+   {
+      A,
+      B,
+      C
+   };
+
+   public Type enemyType;
    public int curHP;
    public int maxHP;
    public bool isChase;
@@ -18,15 +26,19 @@ public class Enemy : MonoBehaviour
    private Rigidbody rigid;
    private BoxCollider boxCollider;
    private Material material;
+   private SphereCollider sphereCollider;
    
    private NavMeshAgent nav;
    private Animator anim;
+
+   public Transform target;
    private void Awake()
    {
       rigid = GetComponent<Rigidbody>();
       boxCollider = GetComponent<BoxCollider>();
       material = GetComponentInChildren<MeshRenderer>().material;
       nav = GetComponent<NavMeshAgent>();
+      sphereCollider = GetComponent<SphereCollider>();
       anim = GetComponentInChildren<Animator>();
    }
 
@@ -38,11 +50,15 @@ public class Enemy : MonoBehaviour
 
    private void Update()
    {
-      if (isChase)
+      if (nav.enabled)
       {
-         //네비메쉬로 추적하는 코드 필요, Collider하나 크게 넣어서 트리거 설정하고
-         //플레이어가 들어오면 추적하도록 설정하면될듯함.
+         if (isChase)
+         {
+            nav.SetDestination(target.position);
+         }
       }
+
+      
    }
 
    void FreezeVelocity()
@@ -61,9 +77,23 @@ public class Enemy : MonoBehaviour
 
    void Targeting()
    {
-      float targetRadius = 1.5f;
-      float targetRange = 3f;
+      float targetRadius = 0;
+      float targetRange = 0;
 
+      switch (enemyType)
+      {
+         case Type.A:
+            targetRadius = 1.5f;
+            targetRange = 3f; 
+            break;
+         case Type.B:
+            targetRadius = 1f;
+            targetRange = 12f; 
+            break;
+         case Type.C:
+            break;
+      }
+      
       RaycastHit[] rayHits = Physics.SphereCastAll(transform.position, targetRadius, transform.forward,
          targetRange, LayerMask.GetMask("Player"));
 
@@ -78,17 +108,34 @@ public class Enemy : MonoBehaviour
       isChase = false;
       isAttack = true;
       
+      anim.SetBool("isWalk",false);
       anim.SetBool("isAttack",true);
-      
-      yield return new WaitForSeconds(0.2f);
-      meleeArea.enabled = true;
-      yield return new WaitForSeconds(1f);
-      meleeArea.enabled = false;
-      
+
+      switch (enemyType)
+      {
+         case Type.A:
+            yield return new WaitForSeconds(0.2f);
+            meleeArea.enabled = true;
+            yield return new WaitForSeconds(1f);
+            meleeArea.enabled = false;
+            yield return new WaitForSeconds(1f);
+            break;
+         case Type.B:
+            yield return new WaitForSeconds(0.1f);
+            rigid.AddForce(transform.forward * 20, ForceMode.Impulse);
+            meleeArea.enabled = true;
+            yield return new WaitForSeconds(0.5f);
+            rigid.velocity = Vector3.zero;
+            meleeArea.enabled = false;
+            yield return new WaitForSeconds(2f);
+            break;
+      }
+
       isChase = true;
       isAttack = false;
       
       anim.SetBool("isAttack",false);
+      anim.SetBool("isWalk",false);
       
    }
 
@@ -110,6 +157,13 @@ public class Enemy : MonoBehaviour
          Destroy(other.gameObject);
          StartCoroutine(OnDamage(reactVec));
          Debug.Log("Range : "+ curHP);
+      }
+      else if (other.tag == "Player")
+      {
+         isChase = true;
+         sphereCollider.enabled = false;
+         anim.SetBool("isWalk",true);
+         target = other.gameObject.transform;
       }
    }
 
