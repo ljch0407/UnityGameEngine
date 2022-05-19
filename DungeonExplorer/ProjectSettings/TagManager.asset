@@ -12,6 +12,8 @@ TagManager:
   - Bullet
   - Enemy
   - Trap
+  - EnemyBullet
+  - InstantKill
   layers:
   - Default
   - TransparentFX
@@ -28,8 +30,8 @@ TagManager:
   - Enemy
   - EnemyDead
   - Trap
-  - 
-  - 
+  - EnemyBullet
+  - InstantKill
   - 
   - 
   - 

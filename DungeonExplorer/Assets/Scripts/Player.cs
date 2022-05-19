@@ -47,6 +47,7 @@ public class Player : MonoBehaviour
     private bool isReload;
     private bool isFireReady;
     private bool isBorder;
+    private bool isDamage;
 
     // 함정에 맞았을 때
     private bool isTrapped;
@@ -54,6 +55,7 @@ public class Player : MonoBehaviour
     //플레이어 객체 compomemt
     private Animator anim;
     private Rigidbody rigid;
+    private MeshRenderer[] meshs;
     
     //카메라 
     public Camera cam;
@@ -67,13 +69,14 @@ public class Player : MonoBehaviour
    
     //무기관련 변수
     private int equipWeaponIndex = -1;
-    private weapon equipWeapon;
+    public weapon equipWeapon;
     private float fireDelay;
 
     void Awake()
     {
         anim = GetComponentInChildren<Animator>();
         rigid = GetComponent<Rigidbody>();
+        meshs = GetComponentsInChildren<MeshRenderer>();
     }
 
     void Update()
@@ -232,13 +235,23 @@ public class Player : MonoBehaviour
     {
         if (jDown && !isSwap)
         {
-            if (wing > 0 || !isJump)
+            if (!isJump)
             {
                 rigid.AddForce(Vector3.up * jumpPower,ForceMode.Impulse);
                 anim.SetTrigger("doJump");
                 anim.SetBool("isJump", true);
                 isJump = true;
-                if (wing > 0) wing -= 1;
+            }
+            else
+            {
+                if (wing > 0)
+                {
+                    rigid.AddForce(Vector3.up * jumpPower,ForceMode.Impulse);
+                    anim.SetTrigger("doJump");
+                    anim.SetBool("isJump", true);
+                    isJump = true;
+                    wing -= 1;
+                }
             }
         }
     }
@@ -281,6 +294,34 @@ public class Player : MonoBehaviour
                     break;
             }
             Destroy(other.gameObject);
+        }
+        else if (other.tag == "EnemyBullet")
+        {
+            if (!isDamage)
+            {
+                Bullet enemyBullet = other.GetComponent<Bullet>();
+                health -= enemyBullet.damage;
+                StartCoroutine(OnDamage());
+            }
+        }
+        else if(other.tag == "InstantKill")
+        {
+            //체크포인트로 돌아가기
+        }
+    }
+
+    IEnumerator OnDamage()
+    {
+        isDamage = true;
+        foreach (MeshRenderer mesh in meshs)
+        {
+            mesh.material.color = Color.yellow;
+        }
+        yield return new WaitForSeconds(1f);
+        isDamage = false;
+        foreach (MeshRenderer mesh in meshs)
+        {
+            mesh.material.color = Color.white;
         }
     }
 
