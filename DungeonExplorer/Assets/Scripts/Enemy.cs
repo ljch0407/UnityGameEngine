@@ -31,6 +31,7 @@ public class Enemy : MonoBehaviour
    private NavMeshAgent nav;
    private Animator anim;
 
+   public GameObject bullet;
    public Transform target;
    private void Awake()
    {
@@ -50,15 +51,10 @@ public class Enemy : MonoBehaviour
 
    private void Update()
    {
-      if (nav.enabled)
-      {
-         if (isChase)
+      if (isChase)
          {
             nav.SetDestination(target.position);
          }
-      }
-
-      
    }
 
    void FreezeVelocity()
@@ -73,6 +69,7 @@ public class Enemy : MonoBehaviour
    private void FixedUpdate()
    {
       FreezeVelocity();
+      Targeting();
    }
 
    void Targeting()
@@ -91,10 +88,13 @@ public class Enemy : MonoBehaviour
             targetRange = 12f; 
             break;
          case Type.C:
+            targetRadius = 1f;
+            targetRange = 25f; 
             break;
       }
       
-      RaycastHit[] rayHits = Physics.SphereCastAll(transform.position, targetRadius, transform.forward,
+      RaycastHit[] rayHits = Physics.SphereCastAll(transform.position,
+         targetRadius, transform.forward,
          targetRange, LayerMask.GetMask("Player"));
 
       if (rayHits.Length > 0 && !isAttack)
@@ -129,13 +129,20 @@ public class Enemy : MonoBehaviour
             meleeArea.enabled = false;
             yield return new WaitForSeconds(2f);
             break;
+         case Type.C:
+            yield return new WaitForSeconds(0.5f);
+            GameObject instantBullet = Instantiate(bullet, transform.position, transform.rotation);
+            Rigidbody rigidBullet = instantBullet.GetComponent<Rigidbody>();
+            rigidBullet.velocity = transform.forward * 20;
+            yield return new WaitForSeconds(2f);
+            break;
       }
 
       isChase = true;
       isAttack = false;
       
       anim.SetBool("isAttack",false);
-      anim.SetBool("isWalk",false);
+      anim.SetBool("isWalk",true);
       
    }
 
