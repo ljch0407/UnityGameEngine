@@ -13,7 +13,8 @@ public class Enemy : MonoBehaviour
    {
       A,
       B,
-      C
+      C,
+      D
    };
 
    public Type enemyType;
@@ -23,21 +24,22 @@ public class Enemy : MonoBehaviour
    public BoxCollider meleeArea;
    public bool isAttack;
 
-   private Rigidbody rigid;
-   private BoxCollider boxCollider;
-   private Material material;
-   private SphereCollider sphereCollider;
-   
-   private NavMeshAgent nav;
-   private Animator anim;
+   public Rigidbody rigid;
+   public BoxCollider boxCollider;
+   public MeshRenderer[] meshs;
+   public SphereCollider sphereCollider;
+ 
+   public NavMeshAgent nav;
+   public Animator anim;
 
    public GameObject bullet;
    public Transform target;
+   public bool isDead;
    private void Awake()
    {
       rigid = GetComponent<Rigidbody>();
       boxCollider = GetComponent<BoxCollider>();
-      material = GetComponentInChildren<MeshRenderer>().material;
+      meshs = GetComponentsInChildren<MeshRenderer>();
       nav = GetComponent<NavMeshAgent>();
       sphereCollider = GetComponent<SphereCollider>();
       anim = GetComponentInChildren<Animator>();
@@ -51,7 +53,7 @@ public class Enemy : MonoBehaviour
 
    private void Update()
    {
-      if (isChase)
+      if (isChase && enemyType != Type.D)
          {
             nav.SetDestination(target.position);
          }
@@ -76,30 +78,32 @@ public class Enemy : MonoBehaviour
    {
       float targetRadius = 0;
       float targetRange = 0;
-
-      switch (enemyType)
+      if (!isDead && enemyType != Type.D)
       {
-         case Type.A:
-            targetRadius = 1.5f;
-            targetRange = 3f; 
-            break;
-         case Type.B:
-            targetRadius = 1f;
-            targetRange = 12f; 
-            break;
-         case Type.C:
-            targetRadius = 1f;
-            targetRange = 25f; 
-            break;
-      }
-      
-      RaycastHit[] rayHits = Physics.SphereCastAll(transform.position,
-         targetRadius, transform.forward,
-         targetRange, LayerMask.GetMask("Player"));
+         switch (enemyType)
+         {
+            case Type.A:
+               targetRadius = 1.5f;
+               targetRange = 3f;
+               break;
+            case Type.B:
+               targetRadius = 1f;
+               targetRange = 12f;
+               break;
+            case Type.C:
+               targetRadius = 1f;
+               targetRange = 25f;
+               break;
+         }
 
-      if (rayHits.Length > 0 && !isAttack)
-      {
-         StartCoroutine(Attack());
+         RaycastHit[] rayHits = Physics.SphereCastAll(transform.position,
+            targetRadius, transform.forward,
+            targetRange, LayerMask.GetMask("Player"));
+
+         if (rayHits.Length > 0 && !isAttack)
+         {
+            StartCoroutine(Attack());
+         }
       }
    }
 
@@ -167,28 +171,39 @@ public class Enemy : MonoBehaviour
       }
       else if (other.tag == "Player")
       {
-         isChase = true;
+         if (enemyType != Type.D)
+         {
+            isChase = true;
+            anim.SetBool("isWalk", true);
+         }
          sphereCollider.enabled = false;
-         anim.SetBool("isWalk",true);
          target = other.gameObject.transform;
       }
    }
 
    IEnumerator OnDamage(Vector3 reactVec)
    {
-      material.color = Color.red;
+      foreach (MeshRenderer mesh in meshs)
+         mesh.material.color = Color.red;
+      
+    
       yield return new WaitForSeconds(0.1f);
 
       if (curHP > 0)
       {
-         material.color = Color.white;
+         foreach (MeshRenderer mesh in meshs)
+            mesh.material.color = Color.white;
+         
          reactVec = reactVec.normalized;
          reactVec += Vector3.up;
          rigid.AddForce(reactVec * 3,ForceMode.Impulse);
       }
       else
       {
-         material.color = Color.gray;
+         foreach (MeshRenderer mesh in meshs)
+            mesh.material.color = Color.gray;
+
+         isDead = true;
          gameObject.layer = 13;
          isChase = false;
          nav.enabled = false;
