@@ -35,6 +35,9 @@ public class Enemy : MonoBehaviour
    public GameObject bullet;
    public Transform target;
    public bool isDead;
+
+   public float chaseRadius;
+
    private void Awake()
    {
       rigid = GetComponent<Rigidbody>();
@@ -54,9 +57,13 @@ public class Enemy : MonoBehaviour
    private void Update()
    {
       if (isChase && enemyType != Type.D)
+      {
+         float dist = Vector3.Distance(target.position, transform.position);
+         if(dist <= chaseRadius)
          {
             nav.SetDestination(target.position);
          }
+      }
    }
 
    void FreezeVelocity()
