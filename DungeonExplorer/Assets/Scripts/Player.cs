@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
     public int maxAmmo;
 
     public int trapForce;
+    public float rotSpeed;
     
     //플레이어 움직임 변수
     private float hAxis;
@@ -33,6 +34,7 @@ public class Player : MonoBehaviour
     private Vector3 moveVec;
     private Vector3 moveDir;
     private bool walkbtnDown;
+    private float yRot;
 
     //플레이어 행동 제어 bools
     private bool isJump;
@@ -225,9 +227,13 @@ public class Player : MonoBehaviour
 
     void Turn()
     { 
-        var offset = cam.transform.forward;
-        offset.y = 0;
-        transform.LookAt(transform.position + offset);
+        yRot += Input.GetAxis("Mouse X") * rotSpeed * Time.deltaTime;
+
+        transform.rotation = Quaternion.Euler(0.0f, yRot, 0.0f);
+            
+        // var offset = cam.transform.forward;
+        // offset.y = 0;
+        // transform.LookAt(transform.position + offset);
 
     }
 
