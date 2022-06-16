@@ -92,13 +92,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 2
-  curHP: 150
-  maxHP: 150
+  curHP: 100
+  maxHP: 100
   isChase: 0
   meleeArea: {fileID: 0}
   isAttack: 0
+  rigid: {fileID: 0}
+  boxCollider: {fileID: 0}
+  meshs: []
+  sphereCollider: {fileID: 0}
+  nav: {fileID: 0}
+  anim: {fileID: 0}
   bullet: {fileID: 8693638799784742639, guid: 031b02d276243b84cae71538ce8aa07d, type: 3}
   target: {fileID: 0}
+  isDead: 0
+  chaseRadius: 0
 --- !u!195 &880310663710385777
 NavMeshAgent:
   m_ObjectHideFlags: 0

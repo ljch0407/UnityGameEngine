@@ -117,8 +117,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 3
-  curHP: 150
-  maxHP: 150
+  curHP: 200
+  maxHP: 200
   isChase: 0
   meleeArea: {fileID: 6757042218337072755}
   isAttack: 0
@@ -131,6 +131,7 @@ MonoBehaviour:
   bullet: {fileID: 1707479067492619753, guid: fb43e57b211a64042b2b88c85abd3fa4, type: 3}
   target: {fileID: 0}
   isDead: 0
+  chaseRadius: 0
   missile: {fileID: 7193132337711522034, guid: 5096441440e5d5f4db484546ba41eb49, type: 3}
   missilePortA: {fileID: 6757042217709008895}
   missilePortB: {fileID: 6757042216675507399}

@@ -284,9 +284,12 @@ public class Player : MonoBehaviour
                         coins = maxCoins;
                     break;
                 case Item.Type.Ammo:
-                    ammo += item.value;
-                    if (ammo > maxAmmo)
-                        ammo = maxAmmo;
+                    if (equipWeapon.type == weapon.Type.Range)
+                    {
+                        equipWeapon.curAmmo += item.value;
+                        if (equipWeapon.curAmmo > equipWeapon.maxAmmo)
+                            equipWeapon.curAmmo = equipWeapon.maxAmmo;
+                    }
                     break;
                 case Item.Type.Heart:
                     health += item.value;
